@@ -1,38 +1,25 @@
 package ravenous
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"time"
 )
 
 //'{"jsonrpc": "1.0", "id":"curltest", "method": "getblockchaininfo", "params": [] }'
 
-func GetBlockchainInfo(endpoint string) error {
-	rpcRequest := RPCRequest{
-		Method:  "getblockchaininfo",
-		Params:  nil,
-		ID:      time.Now().UnixNano(),
-		JSONRPC: "1.0",
-	}
-	payloadBuffer := &bytes.Buffer{}
-	jsonEncoder := json.NewEncoder(payloadBuffer)
-	if err := jsonEncoder.Encode(rpcRequest); err != nil {
-		return err
-	}
-	req, err := http.NewRequest("POST", endpoint, payloadBuffer)
+// GetBlockchainInfo is used to fetch basic blockchain information
+func (c *Client) GetBlockchainInfo() error {
+	payloadBuffer, err := FormatRPCRequest("getblockchaininfo", nil)
+	req, err := http.NewRequest("POST", c.URL, payloadBuffer)
 	if err != nil {
 		return err
 	}
 	req.Header.Add("Content-Type", "application/json")
 	// add basic auth
-	req.SetBasicAuth("user", "user")
-	hc := &http.Client{}
-	resp, err := hc.Do(req)
+	req.SetBasicAuth(c.User, c.Pass)
+	resp, err := c.HC.Do(req)
 	if err != nil {
 		return err
 	}

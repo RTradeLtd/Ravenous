@@ -8,10 +8,13 @@ import (
 
 const (
 	endpoint = "http://192.168.1.233:8766"
+	user     = "user"
+	pass     = "user"
 )
 
 func TestGetBlockchainInfo(t *testing.T) {
-	if err := ravenous.GetBlockchainInfo(endpoint); err != nil {
+	client := ravenous.NewClient(endpoint, user, pass)
+	if err := client.GetBlockchainInfo(); err != nil {
 		t.Fatal(err)
 	}
 }
