@@ -1,7 +1,6 @@
 package ravenous
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -24,11 +23,8 @@ func (c *Client) GetBlockchainInfo() error {
 		return err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode == http.StatusUnauthorized {
-		return errors.New("unauthorized access")
-	}
-	if resp.StatusCode == http.StatusBadRequest {
-		return errors.New("bad request")
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("expected status 200 got %v", resp.StatusCode)
 	}
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

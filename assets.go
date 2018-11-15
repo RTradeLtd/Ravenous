@@ -2,7 +2,7 @@ package ravenous
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -28,11 +28,8 @@ func (c *Client) GetAssetData(assetName string) (*GetAssetDataResponse, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode == http.StatusUnauthorized {
-		return nil, errors.New("unauthorized access")
-	}
-	if resp.StatusCode == http.StatusBadRequest {
-		return nil, errors.New("bad request")
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("expected status 200 got %v", resp.StatusCode)
 	}
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
