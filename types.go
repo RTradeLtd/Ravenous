@@ -14,6 +14,16 @@ type RPCRequest struct {
 	JSONRPC string      `json:"jsonrpc"`
 }
 
+// GetAssetDataResponse is a response from the getassetdata rpc call
+type GetAssetDataResponse struct {
+	Name       string `json:"name"`
+	Amount     int    `json:"amount"`
+	Units      int    `json:"units"`
+	Reissuable int    `json:"reissuable"`
+	HasIPFS    int    `json:"has_ipfs"`
+	IPFSHash   string `json:"ipfs_hash,omitempty"`
+}
+
 // FormatRPCRequest is used to format our RPC request, and generate encoded payload data
 func FormatRPCRequest(method string, params interface{}) (*bytes.Buffer, error) {
 	rpcRequest := RPCRequest{
